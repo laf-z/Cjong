@@ -76,4 +76,24 @@ void main() {
     int pressed_esc = 0;
     int borda_compare_array = NULL;
     int countdown_counter = 0;
+    
+    int getOffsetValue (int lineNum) {
+        int v = 90 * lineNum;
+        return round(sin( v * M_PI /180));
+    };
+/*
+    char dots_handler(int currentC) {
+        return currentC % 4
+    }
+
+*/
+    int getSelectedArr(num) {
+        selectedArr[];
+        for(int i = 0, i<=num , i++) {
+            if(i+1 == y) {
+                //DEU RUIM
+            };
+
+        };
+    };
 }
