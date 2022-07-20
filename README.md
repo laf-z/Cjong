@@ -1,5 +1,5 @@
 # Cjong
- *Trabalho de Fundamentos da Programação, professor Joabe Jesus*
+ *Trabalho de Programação Imperativa, professor Joabe Jesus*
 
  *Escola Politécnica de Pernambuco , 2022*
 
