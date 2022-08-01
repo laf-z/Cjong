@@ -16,4 +16,4 @@
 
  **F** - *Voltar para o menu*
 
-**Setas** - *Navegação*
+**WASD** - *Navegação*
