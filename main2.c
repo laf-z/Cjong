@@ -35,6 +35,7 @@ void namehandler(int counter);
 char *getselectedarray(int num);
 void nameloop();
 void menu();
+void tutorial();
 
 
 
@@ -104,10 +105,13 @@ void getkey()
             case 100: // direita
                 wprintf(L">");
                 break;
+            case 102:
+                menu();
+                break;
             case 27:
                 exit(0);
             default:
-                wprintf(L"%c",k);
+                wprintf(L"%d",k);
             
         }
         
@@ -127,7 +131,7 @@ void enterhandler()
                 printf("dif");
                 break;
             case 3:
-                printf("tutorial");
+                tutorial();
                 break;
             case 4:
                 exit(0);
@@ -138,20 +142,28 @@ void enterhandler()
 }
 void namehandler(int counter)
 {
-    
+
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     SetConsoleTextAttribute(hConsole,FOREGROUND_RED);
+    void printmultiplelines(wchar_t ** text,int x,int y,int lines,int color)
+    {
+        for(int i = 0; i < lines; i++)
+        {
+            gotoxy(x,y+i);
+            SetConsoleTextAttribute(hConsole,color);
+            wprintf(L"%ls",text[i]);
+        }
+    }
 
-    wprintf(L"\n\n\n\n\n\n\n\n");
-    wprintf(L"                                                ███╗   ███╗ █████╗ ██╗  ██╗     ██╗ ██████╗ ███╗   ██╗ ██████╗\n");
-    wprintf(L"                                                ████╗ ████║██╔══██╗██║  ██║     ██║██╔═══██╗████╗  ██║██╔════╝\n");
-    wprintf(L"                                                ██╔████╔██║███████║███████║     ██║██║   ██║██╔██╗ ██║██║  ███╗\n");
-    wprintf(L"                                                ██║╚██╔╝██║██╔══██║██╔══██║██   ██║██║   ██║██║╚██╗██║██║   ██║\n");
-    wprintf(L"                                                ██║ ╚═╝ ██║██║  ██║██║  ██║╚█████╔╝╚██████╔╝██║ ╚████║╚██████╔╝\n");
-    wprintf(L"                                                ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝\n");
-     
-    wprintf(L"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    wchar_t * ce[] = {L" ██████╗",L"██╔════╝",L"██║     ",L"██║     ",L"╚██████╗",L" ╚═════╝"};
+    wchar_t * jong[] = {L"                   ██╗ ██████╗ ███╗   ██╗ ██████╗ ",L"                   ██║██╔═══██╗████╗  ██║██╔════╝ ",L"    █████╗         ██║██║   ██║██╔██╗ ██║██║  ███╗",L"    ╚════╝    ██   ██║██║   ██║██║╚██╗██║██║   ██║",L"              ╚█████╔╝╚██████╔╝██║ ╚████║╚██████╔╝",L"               ╚════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ "};
+
+    
+    printmultiplelines(ce,53,15,6,4);
+    printmultiplelines(jong,61,15,6,1|2|4);
+    wprintf(L"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     wprintf(L"                                                            PRESSIONE ESPAÇO PRA CONTINUAR..."/*+ gen_f.dots_handler(counter)*/);
 
 }
@@ -215,4 +227,35 @@ void menu()
     }
 
 }
-
+void tutorial()
+{
+    system("cls");
+    gotoxy(71,0);
+    wprintf(L"Objetivo do Jogo:");
+    gotoxy(41,3);
+    wprintf(L"-Combinar todas as peças todas as peças do tabuleiro antes que o tempo acabe.");
+    gotoxy(73,6);
+    wprintf(L"Peças Abertas:");
+    gotoxy(17,9);
+    wprintf(L"-Diz-se que uma peça está aberta ou exposta se puder ser movida para a esquerda ou para a direita sem perturbar outras peças.");
+    gotoxy(36,12);
+    wprintf(L"-Duas peças abertas idênticas podem ser combinadas para liberar um espaço no tabuleiro.");
+    gotoxy(74,15);
+    wprintf(L"Como jogar:");
+    gotoxy(34,18);
+    wprintf(L"-O jogador deve combinar todas as peças abertas do tabuleiro antes que o tempo acabe.");
+    gotoxy(57,21);
+    wprintf(L"-Use as setas do teclado para mover o cursor.");
+    gotoxy(51,24);
+    wprintf(L"-Pressione Enter para selecionar duas peças e combiná-las.");
+    gotoxy(45,27);
+    wprintf(L"-Ficou preso? pressione R para randomizar as peças do tabuleiro atual.");
+    gotoxy(61,30);
+    wprintf(L"-Pressione F para voltar para o menu.");
+    gotoxy(54,33);
+    wprintf(L"-Pressione Esc a qualquer momento para sair do jogo.");
+    gotoxy(68,38);
+    wprintf(L"PRESSIONE F PARA VOLTAR");
+    gotoxy(74,41);
+    wprintf(L"BOM JOGO !!!");
+}
