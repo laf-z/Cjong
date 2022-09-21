@@ -10,16 +10,16 @@
 
 
 char splashenabled = 1, nameloopenabled = 0 , menuenabled = 0, difficultyenabled = 0, gameenabled = 0, haspressed = 0;
-int gx = 0, gy = 1, gz = 1, sx = NULL, sz = NULL, diff = 4, csizex, csizey;
-int ttab[60] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-/* general functions */void gotoxy(int x, int y); int * wheretogo(int sizex, int sizey); void getkey(); void enterhandler(); char *getselectedarray(int num); void createboxteclas(char letra,int x,int y); void createboxmenu(); void findcol(int x, int y, int z); void createboxjogo(char simbolo,int numero,int color,int x,int y); void printtab(int x_inicial,int y_inicial,int * tab);
+int gx = 0, gy = 1, gz = 1, sx = -1, sz = -1, diff = 4, csizex, csizey;
+int ttab[3][60] = {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+/* general functions */void gotoxy(int x, int y); int * wheretogo(int sizex, int sizey); void getkey(); void enterhandler(); char *getselectedarray(int num); void createboxteclas(char letra,int x,int y); void createboxmenu(); int findcol(int x, int y, int z); void createboxjogo(char simbolo,int numero,int color,int x,int y); void printtab(int x_inicial,int y_inicial,int * tab);
 /* game specific functions */void splash(); void menu(); void namehandler(int counter); void nameloop();void difficulty(); void tutorial(); void game();
 
 int main()
 {
-    /* begin processes */ system("cls"); CONSOLE_SCREEN_BUFFER_INFO csbi; GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi); csizex = (csbi.srWindow.Right - csbi.srWindow.Left + 1)/2; csizey = (csbi.srWindow.Bottom - csbi.srWindow.Top + 1)/2; _setmode(_fileno(stdout), 0x00020000); _beginthread(getkey,0,NULL);
-    /* start game */     int splashx = wheretogo(77,8)[0], splashy = wheretogo(77,8)[1];
-    /*            */     splash(splashx,splashy);
+    /* begin processes */   system("cls"); CONSOLE_SCREEN_BUFFER_INFO csbi; GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi); csizex = (csbi.srWindow.Right - csbi.srWindow.Left + 1)/2; csizey = (csbi.srWindow.Bottom - csbi.srWindow.Top + 1)/2; _setmode(_fileno(stdout), 0x00020000); _beginthread(getkey,0,NULL);
+    /* start game */        int splashx = wheretogo(77,8)[0], splashy = wheretogo(77,8)[1];
+    /*            */        splash(splashx,splashy);
     /* making sure program does not close */ while(1) printf(".");
     
     return 0;
@@ -176,21 +176,23 @@ void createboxjogo(char simbolo,int numero,int color,int x,int y)// PARAMETROS X
 }
 void printtab(int x_inicial,int y_inicial,int * tab)
 {
-    int contador = x_inicial;
-    int contador_y = y_inicial;
-    for(int i = 0; i < 60; i++)
-    {
-        if(tab[i] == 1)
-        {
-            createboxjogo('c',3,findcol(),contador,contador_y);
-        }
 
-    contador += 5;
-    if(contador == x_inicial + 50)
+    for(int t = 0; t < 3; t++)
     {
-        contador_y += 5;
-        contador = x_inicial;
-    }
+        int posx = x_inicial, posy = y_inicial, counterblockgen = 0;
+        for(int b = 0; b < 60; b++)
+        {
+            if(tab[t][b] != 0)
+            {
+                createboxjogo('c',3,1,posx,posy);
+            }
+            posx+=5;
+            if(posx == x_inicial + 50)
+            {
+                posy+= 5;
+                posx = x_inicial;
+            }
+        }
     }
 }
 
@@ -327,9 +329,9 @@ void game()
     
     system("cls");
     
-
+    int * tab = (int*)&ttab;
     int tabx = wheretogo(50,30)[0], taby = wheretogo(50,30)[1];
-    printtab(tabx,taby,ttab);
+    printtab(tabx,taby,tab);
 }
 
 
