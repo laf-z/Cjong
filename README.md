@@ -17,3 +17,11 @@
  **F** - *Voltar para o menu*
 
 **WASD** - *Navegação*
+
+# Instruções:
+
+Para jogar, basta baixar todos os arquivos e digitar no terminal:
+```
+  $ gcc -o Cjong main.c
+```
+e rodar o arquivo chamado `Cjong`
