@@ -514,9 +514,3 @@ void game()
     /*randomizer(allsymbols,60);*/
     printtab(tabx,taby,ttab);
 }
-
-
-
-
-
-
