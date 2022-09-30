@@ -1,3 +1,30 @@
+/*
+
+GRUPO:
+Leonardo Oliveira de Albuquerque Fell,
+Leticia Fontenelle Chaves,
+Vitor Roberto Gomes Queiroz,
+Lucas Ribeiro Costa
+
+
+Todos os arquivos necessários para rodar o Cjong estão nesse link:
+https://drive.google.com/drive/folders/1iQtVhtLGLa3uvbL4nH1UIYrVYxDsXTvc?usp=sharing
+Para rodar o programa inteiro, é necessário que todas as pastas e arquivos estejam dentro do mesmo diretório.
+
+Pode também fazer o download pelo github:
+https://github.com/laf-z/Cjong
+Indo em code, Download ZIP e extraindo em uma pasta.
+
+Para jogar, basta baixar o arquivo Cjong.exe (no github e no drive) e abrí-lo, ou rodar no terminal:
+
+  $ gcc -o Cjong main.c
+
+e rodar o arquivo chamado Cjong
+
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -487,3 +514,9 @@ void game()
     /*randomizer(allsymbols,60);*/
     printtab(tabx,taby,ttab);
 }
+
+
+
+
+
+
