@@ -1,3 +1,5 @@
+/* Infelizmente essa parte do código não foi integrada ainda */
+
 #include <conio.h>
 #include <stdio.h>
 #include <wchar.h>
