@@ -20,7 +20,7 @@
 
 # Instruções:
 
-Para jogar, basta baixar todos os arquivos e digitar no terminal:
+Para jogar, basta baixar o arquivo Cjong.exe, ou rodar no terminal:
 ```
   $ gcc -o Cjong main.c
 ```
