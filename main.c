@@ -7,12 +7,16 @@
 #include <wchar.h> /* wprintf */
 #include <wincon.h>
 #include <io.h>
+#include <time.h>
+#include <setjmp.h>
 
-
-char splashenabled = 1, nameloopenabled = 0 , menuenabled = 0, difficultyenabled = 0, gameenabled = 0, haspressed = 0;
+static jmp_buf s_jumpBuffer;
+char sym_lib[] = {'!','@','#','$','%','&','*'};
+char allsymbols[3][60][2]; /* { {{'2','☺'},{'3','♂'},...}, {...} ,{...} } */
+char splashenabled = 1, nameloopenabled = 0 , menuenabled = 0, difficultyenabled = 0, gameenabled = 0, haspressed = 0, gamestarted = 0;
 int gx = 0, gy = 1, gz = 1, sx = -1, sz = -1, diff = 4, csizex, csizey;
-int ttab[3][60] = {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
-/* general functions */void gotoxy(int x, int y); int * wheretogo(int sizex, int sizey); void getkey(); void enterhandler(); char *getselectedarray(int num); void createboxteclas(char letra,int x,int y); void createboxmenu(); int findcol(int x, int y, int z); void createboxjogo(char simbolo,int numero,int color,int x,int y); void printtab(int x_inicial,int y_inicial,int * tab);
+int ttab[3][60] = {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+/* general functions */void gotoxy(int x, int y); int * wheretogo(int sizex, int sizey); void getkey(); void enterhandler(); char *getselectedarray(int num); void createboxteclas(char letra,int x,int y); void createboxmenu(); int findcol(int x, int y, int z); void createboxjogo(char simbolo,int numero,int color,int x,int y); void printtab(int x_inicial,int y_inicial,int tab[3][60]);void gensymbolarray();
 /* game specific functions */void splash(); void menu(); void namehandler(int counter); void nameloop();void difficulty(); void tutorial(); void game();
 
 int main()
@@ -51,16 +55,90 @@ void getkey()
             case 119: // cima
                 if(menuenabled == 1 && gy > 1){gy--; menu();}
                 if(difficultyenabled == 1 && gy > 1){gy--; difficulty();}
+                if(gameenabled == 1 && gx > 9)
+                    {
+                        if (setjmp(s_jumpBuffer))
+                        {
+                            printf(".");
+                        }else {
+                            int add = 10;
+                            while(ttab[0][gx-add] == 0)
+                            {
+                                if(gx-add > 9) add+=10;
+                                else add = 0;
+                            }
+                            gx -= add;
+                        }
+                        if(ttab[2][gx] != 0) gz =3;
+                        else if(ttab[1][gx] != 0) gz =2;
+                        else gz =1;
+                        game();
+                }
                 break;
             case 97: // esquerda
-                wprintf(L"<");    
+                if(gameenabled == 1 && gx > 0)
+                {
+                    if (setjmp(s_jumpBuffer))
+                    {
+                      printf(".");
+                    } else {
+                      // Normal code execution starts here
+                      int add = 1;
+                      while(ttab[0][gx-add] == 0)
+                      {
+                        if(gx-add > 0) add+=1;
+                        else add = 0;
+                      }
+                      gx -= add;
+                    }
+                    if(ttab[2][gx] != 0) gz =3;
+                    else if(ttab[1][gx] != 0) gz =2;
+                    else gz =1;
+                    game();
+
+                }
                 break;
             case 115: // baixo
                 if(menuenabled == 1 && gy < 4){gy++; menu();}
                 if(difficultyenabled == 1 && gy < 4){gy++; difficulty();}
+                if(gameenabled == 1 && gx < 50)
+                    {
+                        if (setjmp(s_jumpBuffer))
+                        {
+                            printf(".");
+                        }else {
+                            int add = 10;
+                            while(ttab[0][gx+add] == 0)
+                            {
+                                add+=10;
+                            }
+                            gx += add;
+                        }
+                        if(ttab[2][gx] != 0) gz =3;
+                        else if(ttab[1][gx] != 0) gz =2;
+                        else gz =1;
+                        game();
+                }
                 break;
             case 100: // direita
-                wprintf(L">");
+                if(gameenabled == 1 && gx < 59)
+                    {
+                        if (setjmp(s_jumpBuffer))
+                        {
+                            printf(".");
+                        }else {
+                            int add = 1;
+                            while(ttab[0][gx+add] == 0)
+                            {
+                                add+=1;
+                            }
+                            gx += add;
+                        }
+                        if(ttab[2][gx] != 0) gz =3;
+                        else if(ttab[1][gx] != 0) gz =2;
+                        else gz =1;
+                        game();
+                }
                 break;
             case 102:
                 menu();
@@ -104,6 +182,21 @@ void enterhandler()
             case 4:
                 diff = 0; menu(); break;
         }
+    }
+    else if(gameenabled == 1)
+    {
+        if(sx != -1)
+        {
+            int zcursor = gz -1;
+            int zselected = sz-1;
+            /*compare block*/
+        }
+        else
+        {
+            sx = gx;
+            sz = gz;
+        }
+        game();
     }
 }
 void nameloop() // calls namehandler
@@ -174,28 +267,86 @@ void createboxjogo(char simbolo,int numero,int color,int x,int y)// PARAMETROS X
     gotoxy(x,y+3);  wprintf(L"│  %d│\n",numero);
     gotoxy(x,y+4);  wprintf(L"└───┘\n");
 }
-void printtab(int x_inicial,int y_inicial,int * tab)
+void printtab(int x_inicial,int y_inicial,int tab[3][60])
 {
 
     for(int t = 0; t < 3; t++)
     {
-        int posx = x_inicial, posy = y_inicial, counterblockgen = 0;
+
+        int posx = x_inicial, posy = y_inicial,cposx = 0,cposy = 1, counterblockgen = 0;
         for(int b = 0; b < 60; b++)
         {
             if(tab[t][b] != 0)
             {
-                createboxjogo('c',3,1,posx,posy);
+                createboxjogo(allsymbols[t][b][1],allsymbols[t][b][0],findcol(cposx,cposy,t+1),posx - t,posy -t);
             }
-            posx+=5;
+            posx+=5;cposx++;
             if(posx == x_inicial + 50)
             {
-                posy+= 5;
+                posy+= 5;cposx = 0;cposy++;
                 posx = x_inicial;
             }
         }
     }
 }
+/*
+void randomizer(char arr[3][60][2],int size)
+{
 
+    for(int z = 0; z < 3; z++)
+    {
+        int nullposition[60];
+        int nullcounter = 0;
+        srand(time(0));
+        if (size > 1)
+        {
+            for(int i=0; i< size; i++) //remove null
+            {
+                if(arr[z][i] == 0)
+                {
+                    nullposition[nullcounter] = i; nullcounter++; int j = i;
+                    for(j; j < size; j++) arr[z][i] = arr[z][i + 1];
+                }
+            }
+
+            for (int i = 0; i < size - 1; i++) //shuffle
+            {
+
+                //pick a random index (j) to swap it with
+                //okay to pick same value as i
+                int j = rand() % size; //random between 0 and 10
+                char* temp = arr[j];
+                arr[j] = arr[i];
+                arr[i] = temp;
+            }
+
+
+            for(int i=0; i< nullcounter; i++) //add back nulls
+            {
+                for(int i=size-1; i>= nullposition[i]-1; i--) arr[z][i+1] = arr[z][i];
+                arr[nullposition[i]] = 0;
+            }
+
+
+
+        }
+    }
+}
+*/
+
+void gensymbolarray()
+{
+    for (int z = 0; z < 3; z++)
+    {
+        for(int x = 0; x < 60; x+=2)
+        {
+            char rnumber = rand() % 4 + 1;
+            char rsym = (char)sym_lib[rand()%7];
+            allsymbols[z][x][0] = rnumber; allsymbols[z][x][1] = rsym;
+            allsymbols[z][x+1][0] = rnumber; allsymbols[z][x+1][1] = rsym;
+        }
+    }
+}
 
 void splash(int x,int y)
 {
@@ -260,6 +411,9 @@ void namehandler(int counter)
 }
 void menu()
 {
+    menuenabled = 1;
+    difficultyenabled = 0;
+
     system("cls");
 
     wchar_t botoesmenu[4][21] = {L"       JOGAR        ",L"     DIFICULDADE    ",L"     COMO JOGAR     ",L"        SAIR        "};
@@ -328,14 +482,8 @@ void game()
     menuenabled = 0;
     
     system("cls");
-    
-    int * tab = (int*)&ttab;
     int tabx = wheretogo(50,30)[0], taby = wheretogo(50,30)[1];
-    printtab(tabx,taby,tab);
+    if(gamestarted == 0){gensymbolarray();gamestarted=1;}
+    /*randomizer(allsymbols,60);*/
+    printtab(tabx,taby,ttab);
 }
-
-
-
-
-
-
