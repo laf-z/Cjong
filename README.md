@@ -1,7 +1,7 @@
 # Cjong
  *Trabalho de Programação Imperativa, professor Joabe Jesus*
 
- *Escola Politécnica de Pernambuco , 2022*
+ *Escola Politécnica de Pernambuco , Universidade de Pernambuco, 2022*
 
 **Alunos:**
 1. *Leonardo Oliveira de Albuquerque Fell*
